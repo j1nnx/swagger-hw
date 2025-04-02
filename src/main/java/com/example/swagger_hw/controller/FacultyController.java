@@ -39,11 +39,8 @@ public class FacultyController {
     @GetMapping("/filter")
     public List<Faculty> filterFacultiesByColor(@RequestParam String color) {
         return facultyService.getFacultys()
-                .values()
                 .stream()
                 .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
+                .toList();
     }
-
-
 }
