@@ -6,13 +6,11 @@ import com.example.swagger_hw.repository.FacultyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class FacultyService{
-    private FacultyRepository facultyRepository;
+    private final FacultyRepository facultyRepository;
 
     @Autowired
     public FacultyService(FacultyRepository facultyRepository) {
@@ -27,7 +25,7 @@ public class FacultyService{
         return facultyRepository.findById(id).orElse(null);
     }
 
-    public List<Faculty> getFacultys() {
+    public List<Faculty> getFaculties() {
         return facultyRepository.findAll();
     }
 
@@ -45,5 +43,9 @@ public class FacultyService{
             return faculty;
         }
         return null;
+    }
+
+    public List<Faculty> findFacultiesByNameOrColor(String query) {
+        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(query, query);
     }
 }
