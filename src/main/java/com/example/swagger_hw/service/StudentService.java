@@ -1,40 +1,62 @@
 package com.example.swagger_hw.service;
 
 import com.example.swagger_hw.model.Student;
+import com.example.swagger_hw.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private long lastId = 0;
+    private final StudentRepository studentRepository;
 
-    public Student studentCreate(Student student){
-        student.setId(++lastId);
-        students.put(lastId, student);
-        return student;
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
-    public Student getStudent(Long id){
-        return students.get(id);
+    public Student studentCreate(Student student) {
+        return studentRepository.save(student);
     }
 
-    public Map<Long, Student> getStudents() {
-        return students;
+    public Student getStudent(Long id) {
+        return studentRepository.findById(id).orElse(null);
     }
 
-    public Student updateStudent(Student student){
-        if (students.containsKey(student.getId())){
-            students.put(student.getId(), student);
+    public List<Student> getStudents() {
+        return studentRepository.findAll();
+    }
+
+    public Student updateStudent(Student student) {
+        if (studentRepository.existsById(student.getId())) {
+            return studentRepository.save(student);
+        }
+        return null;
+    }
+
+    public Student deleteStudent(Long id) {
+        if (studentRepository.existsById(id)) {
+            Student student = studentRepository.findById(id).orElse(null);
+            studentRepository.deleteById(id);
             return student;
         }
         return null;
     }
 
-    public Student deleteStudent(Long id){
-        return students.remove(id);
+    public List<Student> findByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
+    }
+
+    public Long getTotalStudentsCount() {
+        return studentRepository.getTotalStudentsCount();
+    }
+
+    public Double getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    public List<Student> findLastFiveStudents() {
+        return studentRepository.findLastFiveStudents();
     }
 }
