@@ -5,10 +5,7 @@ import com.example.swagger_hw.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Service
 public class StudentService {
@@ -19,11 +16,11 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public Student studentCreate(Student student){
+    public Student studentCreate(Student student) {
         return studentRepository.save(student);
     }
 
-    public Student getStudent(Long id){
+    public Student getStudent(Long id) {
         return studentRepository.findById(id).orElse(null);
     }
 
@@ -31,15 +28,15 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public Student updateStudent(Student student){
-        if (studentRepository.existsById(student.getId())){
+    public Student updateStudent(Student student) {
+        if (studentRepository.existsById(student.getId())) {
             return studentRepository.save(student);
         }
         return null;
     }
 
-    public Student deleteStudent(Long id){
-        if (studentRepository.existsById(id)){
+    public Student deleteStudent(Long id) {
+        if (studentRepository.existsById(id)) {
             Student student = studentRepository.findById(id).orElse(null);
             studentRepository.deleteById(id);
             return student;
@@ -51,4 +48,15 @@ public class StudentService {
         return studentRepository.findByAgeBetween(minAge, maxAge);
     }
 
+    public Long getTotalStudentsCount() {
+        return studentRepository.getTotalStudentsCount();
+    }
+
+    public Double getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    public List<Student> findLastFiveStudents() {
+        return studentRepository.findLastFiveStudents();
+    }
 }
