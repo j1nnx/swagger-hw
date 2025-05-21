@@ -1,40 +1,74 @@
 package com.example.swagger_hw.service;
 
 import com.example.swagger_hw.model.Student;
+import com.example.swagger_hw.repository.StudentRepository;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> students = new HashMap<>();
-    private long lastId = 0;
+    private final StudentRepository studentRepository;
+    Logger logger = Logger.getLogger(StudentService.class.getName());
 
-    public Student studentCreate(Student student){
-        student.setId(++lastId);
-        students.put(lastId, student);
-        return student;
+    @Autowired
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
-    public Student getStudent(Long id){
-        return students.get(id);
+    public Student studentCreate(Student student) {
+        logger.info("Was invoked method for create student");
+        return studentRepository.save(student);
     }
 
-    public Map<Long, Student> getStudents() {
-        return students;
+    public Student getStudent(Long id) {
+        logger.info("Was invoked method for get student");
+        return studentRepository.findById(id).orElse(null);
     }
 
-    public Student updateStudent(Student student){
-        if (students.containsKey(student.getId())){
-            students.put(student.getId(), student);
+    public List<Student> getStudents() {
+        logger.info("Was invoked method for get all students");
+        return studentRepository.findAll();
+    }
+
+    public Student updateStudent(Student student) {
+        logger.info("Was invoked method for update student");
+        if (studentRepository.existsById(student.getId())) {
+            return studentRepository.save(student);
+        }
+        return null;
+    }
+
+    public Student deleteStudent(Long id) {
+        logger.info("Was invoked method for delete student");
+        if (studentRepository.existsById(id)) {
+            Student student = studentRepository.findById(id).orElse(null);
+            studentRepository.deleteById(id);
             return student;
         }
         return null;
     }
 
-    public Student deleteStudent(Long id){
-        return students.remove(id);
+    public List<Student> findByAgeBetween(int minAge, int maxAge) {
+        logger.info("Was invoked method for find students by age between");
+        return studentRepository.findByAgeBetween(minAge, maxAge);
+    }
+
+    public Long getTotalStudentsCount() {
+        logger.info("Was invoked method for get total students count");
+        return studentRepository.getTotalStudentsCount();
+    }
+
+    public Double getAverageAge() {
+        logger.info("Was invoked method for get average age");
+        return studentRepository.getAverageAge();
+    }
+
+    public List<Student> findLastFiveStudents() {
+        logger.info("Was invoked method for find last five students");
+        return studentRepository.findLastFiveStudents();
     }
 }
