@@ -1,9 +1,11 @@
 package com.example.swagger_hw.controller;
 
 import com.example.swagger_hw.model.Faculty;
+import com.example.swagger_hw.model.Student;
 import com.example.swagger_hw.service.FacultyService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,11 +40,30 @@ public class FacultyController {
 
     @GetMapping("/filter")
     public List<Faculty> filterFacultiesByColor(@RequestParam String color) {
-        return facultyService.getFacultys()
-                .values()
+        return facultyService.getFaculties()
                 .stream()
                 .filter(faculty -> faculty.getColor().equals(color))
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @GetMapping("/search")
+    public List<Faculty> getFacultiesByNameOrColor(@RequestParam String query) {
+        return facultyService.findFacultiesByNameOrColor(query);
+    }
+
+    @GetMapping("/{id}/students")
+    public List<Student> getStudentsOfFaculty(@PathVariable Long id) {
+        Faculty faculty = facultyService.getFaculty(id);
+        return faculty != null ? faculty.getStudents() : null;
+    }
+
+    @GetMapping("/longest-name")
+    public String getLongestFacultyName() {
+        return facultyService.getFaculties()
+                .stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
     }
 
 
