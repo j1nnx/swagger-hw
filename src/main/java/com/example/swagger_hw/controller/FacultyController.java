@@ -5,6 +5,7 @@ import com.example.swagger_hw.model.Student;
 import com.example.swagger_hw.service.FacultyService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,4 +56,15 @@ public class FacultyController {
         Faculty faculty = facultyService.getFaculty(id);
         return faculty != null ? faculty.getStudents() : null;
     }
+
+    @GetMapping("/longest-name")
+    public String getLongestFacultyName() {
+        return facultyService.getFaculties()
+                .stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparingInt(String::length))
+                .orElse("");
+    }
+
+
 }

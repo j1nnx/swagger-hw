@@ -69,4 +69,24 @@ public class StudentController {
     public List<Student> getLastFiveStudents() {
         return studentService.findLastFiveStudents();
     }
+
+    @GetMapping("/names-starting-with-a")
+    public List<String> getStudentNamesStartingWithA() {
+        return studentService.getStudents()
+                .stream()
+                .map(Student::getName)
+                .filter(name -> name.toUpperCase().startsWith("A"))
+                .map(String::toUpperCase)
+                .sorted()
+                .toList();
+    }
+
+    @GetMapping("/average-age-stream")
+    public Double getAverageAgeStream() {
+        return studentService.getStudents()
+                .stream()
+                .mapToDouble(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
 }
